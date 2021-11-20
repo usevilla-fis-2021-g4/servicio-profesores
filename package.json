@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Api Profesores",
   "main": "index.js",
-  "repository":{
+  "repository": {
     "type": "git",
     "url": "https://github.com/usevilla-fis-2021-g4/servicio-profesores.git"
   },
@@ -15,6 +15,7 @@
   "author": "Juan Carlos Estrada Nieto y Brian Enríquez",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "nedb": "^1.8.0"
   }
 }
