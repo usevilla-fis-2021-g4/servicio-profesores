@@ -38,7 +38,18 @@ app.get("/", (request, response) => {
 
 app.get(BASE_API_PATH+"/profesores", (request, response) => {
     console.log(Date() + "GET - /profesores");
-    response.send([]);
+
+    db.find({}, function(err, resultados) {
+        if(err)
+        {
+            response.sendStatus(500);
+        }
+        else
+        {
+            response.send(resultados);
+        }
+
+    });
 });
 
 //el body llega vacío con postman pero funciona haciendo el post desde terminal
