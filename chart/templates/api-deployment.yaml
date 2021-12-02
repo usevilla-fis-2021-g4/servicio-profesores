@@ -13,26 +13,25 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
-      label:
+      labels:
         app.kubernetes.io/name: api
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       terminationGracePeriodSeconds: 0
-      container:
+      containers:
         - name: api
-        image: {{ .Values.api.image }}:{{ .Values.tag }}
-        ports:
-          - name: http
-            containerPort: 3000
-            protocol: TCP
-        readinessProbe:
-          periodSeconds: 1
-          httpGet:
-            path: /api/v1/healthz
-            port: 3000
-        livenessProbe:
-          periodSeconds: 1
-          httpGet:
-            path: /api/v1/healthz
-            port: 3000
-
+          image: {{ .Values.api.image }}:{{ .Values.tag }}
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          readinessProbe:
+            periodSeconds: 1
+            httpGet:
+              path: /api/v1/healthz
+              port: 3000
+          livenessProbe:
+            periodSeconds: 1
+            httpGet:
+              path: /api/v1/healthz
+              port: 3000
