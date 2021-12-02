@@ -6,7 +6,7 @@ metadata:
     {{- include "profesores.labels" . | nindent 4 }}
   annotations:
     dev.okteto.com/auto-ingress: "true"
-specs:
+spec:
   selector:
     app.kubernetes.io/name: api
     app.kubernetes.io/instance: {{ .Release.Name }}
