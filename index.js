@@ -36,6 +36,10 @@ app.get("/", (request, response) => {
     response.send("<html><body><h1>My Server.</h1></body></html>");
 });
 
+app.get(BASE_API_PATH+"/healthz", (request, response) => {
+    response.sendStatus(200);
+});
+
 app.get(BASE_API_PATH+"/profesores", (request, response) => {
     console.log(Date() + "GET - /profesores");
 
