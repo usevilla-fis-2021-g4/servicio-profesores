@@ -1,11 +1,14 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 const Profesor = require('./profesores');
+var cors = require('cors');
 
 var BASE_API_PATH = "/api/v1";
 
 var app = express();
 app.use(bodyParser.json());
+app.use(cors());
+
 
 //inserción del director
 var profesorDirector = {"identificacion": "000000", "nombre": "Paul Mccartney", "editable": false, password: "ElCuartetoDeNos"};

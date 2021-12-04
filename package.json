@@ -15,6 +15,7 @@
   "author": "Juan Carlos Estrada Nieto y Brian Enríquez",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "mongoose": "^6.0.14",
     "nedb": "^1.8.0"
