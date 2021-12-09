@@ -1,15 +1,17 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 const Profesor = require('./profesores');
-var cors = require('cors');
 
 var BASE_API_PATH = "/api/v1";
 
 var app = express();
 app.use(bodyParser.json());
-app.use(cors());
 
 //INICIO CORS
+/*
+var cors = require('cors');
+app.use(cors());
+
 // Add headers before the routes are defined
 app.use(function (req, res, next) {
 
@@ -29,6 +31,7 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
+*/
 //FIN CORS
 
 //inserción del director
