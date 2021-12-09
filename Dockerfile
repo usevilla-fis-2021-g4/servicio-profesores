@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-16-bullseye
+FROM node:9-alpine
 
 WORKDIR /app
 
