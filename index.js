@@ -1,4 +1,4 @@
-var app = require("./server.js");
+const app = require("./server");
 var dbConnect = require('./db');
 
 var port = ( process.env.PORT || 3000 );
