@@ -8,7 +8,7 @@ const profesorSchema = new mongoose.Schema({
 });
 
 profesorSchema.methods.limpiar = function(){
-    return {identificacion: this.identificacion, nombre: this.nombre, editable: this.editable};
+    return {_id: this._id, identificacion: this.identificacion, nombre: this.nombre, editable: this.editable};
 }
 
 const Profesor = mongoose.model('Profesor', profesorSchema);
