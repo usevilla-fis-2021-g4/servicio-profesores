@@ -7,8 +7,8 @@ services:
       - '27017'
     ports:
       - '27017:27017'
-#    environment:
-#      MONGO_INITDB_DATABASE: NotasDatabase
+    environment:
+      MONGO_INITDB_DATABASE: ProfesoresDatabase
     volumes:
       - mongodb-data:/data/db
 volumes:
