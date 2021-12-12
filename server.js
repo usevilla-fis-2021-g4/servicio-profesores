@@ -45,21 +45,48 @@ app.get(BASE_API_PATH+"/profesores", (request, response) => {
 app.post(BASE_API_PATH+"/profesores", (request, response) => {
     console.log(Date() + "POST - /profesores");
     var profesor = request.body;
-    // console.log("profesor");
-    // console.log(profesor);
-
-    Profesor.create(profesor, function(error) {
-        if(error)
+    console.log("profesor");
+    console.log(profesor);
+    
+    Profesor.count({"identificacion": profesor.identificacion}, function (err, count) {
+        console.log(count);
+        if(count > 0)
         {
-            console.log(Date() + " - "+error);
             response.sendStatus(500);
         }
         else
         {
-            response.sendStatus(201);
+            Profesor.create(profesor, function(error) {
+                if(error)
+                {
+                    console.log(Date() + " - "+error);
+                    response.sendStatus(500);
+                }
+                else
+                {
+                    response.sendStatus(201);
+                }
+            });
         }
-
     });
+
+});
+
+app.delete(BASE_API_PATH+"/profesores/:id", (request, response) => {
+    console.log(Date() + "DELETE - /profesores");
+    // var profesor_id = request.params.id;
+    // console.log("profesor_id");
+    // console.log(profesor_id);
+
+    Profesor.findByIdAndDelete(request.params.id).then((profesor) => {
+        if (!profesor) {
+            return response.status(404).send();
+        }
+        response.send(profesor);
+    }).catch((error) => {
+        response.status(500).send(error);
+    });
+    
 });
 
 module.exports = app;
