@@ -10,6 +10,6 @@ services:
     environment:
       MONGO_INITDB_DATABASE: ProfesoresDatabase
     volumes:
-      - mongodb-data:/data/db
+      - mongodata:/data/db
 volumes:
-  mongodb-data: 
+  mongodata: 
