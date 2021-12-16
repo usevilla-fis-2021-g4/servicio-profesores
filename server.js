@@ -47,12 +47,13 @@ app.post(BASE_API_PATH+"/profesores", (request, response) => {
     var profesor = request.body;
     console.log("profesor");
     console.log(profesor);
-    
+
     Profesor.count({"identificacion": profesor.identificacion}, function (err, count) {
         console.log(count);
         if(count > 0)
         {
-            response.sendStatus(500);
+            //response.sendStatus(500);
+            return response.status(409).send("La identificación ya está registrada.");
         }
         else
         {
@@ -72,6 +73,38 @@ app.post(BASE_API_PATH+"/profesores", (request, response) => {
 
 });
 
+app.patch(BASE_API_PATH+"/profesores/:id", (request, response) => {
+    console.log(Date() + "PATCH - /profesores");
+    var id = request.params.id;
+    var datos = request.body;
+    console.log("id "+id);
+    console.log("datos "+datos);
+
+    Profesor.count({"identificacion": datos.identificacion, _id: { $ne: id }}, function (err, count) {
+        console.log(count);
+        if(count > 0)
+        {
+            return response.status(409).send("No se pudo guardar el cambio. Existe otro profesor con esa identificación.");
+        }
+        else
+        {
+            Profesor.findByIdAndUpdate(id, datos, {new: true})
+            .then((profesor) => {
+                if (!profesor) 
+                {
+                    return response.status(404).send();
+                }
+                response.send(profesor);
+            })
+            .catch((error) => {
+                response.status(500).send(error);
+            });
+        }
+    });
+
+
+});
+
 app.delete(BASE_API_PATH+"/profesores/:id", (request, response) => {
     console.log(Date() + "DELETE - /profesores");
     // var profesor_id = request.params.id;
@@ -86,7 +119,7 @@ app.delete(BASE_API_PATH+"/profesores/:id", (request, response) => {
     }).catch((error) => {
         response.status(500).send(error);
     });
-    
+
 });
 
 module.exports = app;
