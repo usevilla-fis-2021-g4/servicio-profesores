@@ -1,4 +1,5 @@
 var express = require("express");
+const url = require('url');
 var bodyParser = require("body-parser");
 const Profesor = require('./profesores');
 
@@ -25,7 +26,23 @@ app.get(BASE_API_PATH+"/healthz", (request, response) => {
 app.get(BASE_API_PATH+"/profesores", (request, response) => {
     console.log(Date() + "GET - /profesores");
 
-    Profesor.find({}, function(error, resultados) {
+    const queryObject = url.parse(request.url,true).query;
+    //console.log("queryObject");
+    //console.log(queryObject);
+    //console.log("queryObject.identificacion");
+    //console.log(queryObject.identificacion);
+    var identificacion = queryObject.identificacion;
+
+    //console.log("request.url");
+    //console.log(request.url);
+    var filtros = {}
+    
+    if(typeof queryObject.identificacion !== 'undefined')
+    {
+        var filtros = {"identificacion": identificacion};
+    }    
+
+    Profesor.find(filtros, function(error, resultados) {
         if(error)
         {
             console.log(Date() + " - "+error);
@@ -38,6 +55,21 @@ app.get(BASE_API_PATH+"/profesores", (request, response) => {
             }));
         }
     });
+});
+
+//obtener un profesor por id
+app.get(BASE_API_PATH+"/profesores/:id", (request, response) => {
+    console.log(Date() + "GET - /profesores/"+request.params.id);
+
+    Profesor.findById(request.params.id).then((profesor) => {
+        if (!profesor) {
+            return response.status(404).send();
+        }
+        response.send(profesor);
+    }).catch((error) => {
+        response.status(500).send(error);
+    });
+
 });
 
 //el body llega vacío con postman pero funciona haciendo el post desde terminal
@@ -53,7 +85,13 @@ app.post(BASE_API_PATH+"/profesores", (request, response) => {
         if(count > 0)
         {
             //response.sendStatus(500);
-            return response.status(409).send("La identificación ya está registrada.");
+            //return response.status(409).send("La identificación ya está registrada.");
+            //response.status(409);
+            //return response.send("La identificación ya está registrada.");
+            //return response.status(409).send('La identificación ya está registrada.');
+            response.statusMessage = "La identificación ya está registrada.";
+            response.status(409).end();
+            return response;
         }
         else
         {
@@ -84,7 +122,10 @@ app.patch(BASE_API_PATH+"/profesores/:id", (request, response) => {
         console.log(count);
         if(count > 0)
         {
-            return response.status(409).send("No se pudo guardar el cambio. Existe otro profesor con esa identificación.");
+            //return response.status(409).send({message: "No se pudo guardar el cambio. Existe otro profesor con esa identificación."});
+            response.statusMessage = "No se pudo guardar el cambio. Existe otro profesor con esa identificación.";
+            response.status(409).end();
+            return response;
         }
         else
         {
