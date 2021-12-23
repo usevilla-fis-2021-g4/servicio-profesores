@@ -1,4 +1,4 @@
 deploy:
   - okteto build -t okteto.dev/api:${OKTETO_GIT_COMMIT} .
-  - helm upgrade --install servicio-profesores chart --set tag=${OKTETO_GIT_COMMIT}
-  - okteto stack deploy -f mongodb-compose.yml --wait
+  - helm upgrade --install servicio-profesores chart --set tag=${OKTETO_GIT_COMMIT} --set mongoUrl=$MONGO_URL
+#  - okteto stack deploy -f mongodb-compose.yml --wait
