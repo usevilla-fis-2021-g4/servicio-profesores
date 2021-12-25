@@ -8,8 +8,11 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-    # The type of runner that the job will run on
+  test:
+    uses: usevilla-fis-2021-g4/servicio-profesores/.github/workflows/tests.yml@master
+  
+  deploy:
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
