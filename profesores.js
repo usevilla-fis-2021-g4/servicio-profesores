@@ -1,10 +1,22 @@
 const mongoose = require('mongoose');
 
 const profesorSchema = new mongoose.Schema({
-    identificacion: String,
-    nombre: String,
-    password: String,
-    editable: Boolean
+    identificacion: {
+        type: String,
+        required: true
+    },
+    nombre: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    editable: {
+        type: Boolean,
+        required: true
+    }
 });
 
 profesorSchema.methods.limpiar = function(){
