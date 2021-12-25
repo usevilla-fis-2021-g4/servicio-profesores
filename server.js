@@ -123,7 +123,7 @@ app.post(BASE_API_PATH+"/profesores", (request, response) => {
     console.log(profesor);
 
     Profesor.count({"identificacion": profesor.identificacion}, function (err, count) {
-        console.log(count);
+        //console.log(count);
         if(count > 0)
         {
             //response.sendStatus(500);
