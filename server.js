@@ -8,16 +8,53 @@ var BASE_API_PATH = "/api/v1";
 var app = express();
 app.use(bodyParser.json());
 
-//inserción del director
-var profesorDirector = {
-    "identificacion": "000000",
-    "nombre": "Director",
-    "password": "123456",
-    "editable": false
-};
-Profesor.count({"identificacion": "000000"}, function (err, count) {
-    console.log(count);
-    if(count == 0)Profesor.create(profesorDirector);
+app.get(BASE_API_PATH+"/initialize", (request, response) => {
+
+    //inserción del director
+
+    var identificacion = "000000";
+    var profesorDirector = {
+        "identificacion": identificacion,
+        "nombre": "Director",
+        "password": "123456",
+        "editable": false
+    };
+    var filtro = {"identificacion": identificacion};
+
+    Profesor.count(filtro, function (err, count) {
+        console.log(count);
+        if(count == 0)
+        {
+            Profesor.create(profesorDirector, function(error) {
+                if(error)
+                {
+                    console.log(Date() + " - "+error);
+        
+                    if(error.errors)
+                    {
+                        response.statusMessage = error.message;
+                        response.status(400).end();
+                        return response;
+                    }
+        
+                    response.sendStatus(500);
+                }
+                else
+                {
+                    response.statusMessage = "Se ha creado el usuario director.";
+                    response.status(201).end();
+                    return response;
+                }
+            });
+        }
+        else
+        {
+            response.statusMessage = "El director ya existe.";
+            response.status(200).end();
+            return response;
+        }
+    });
+
 });
 
 app.get("/", (request, response) => {
