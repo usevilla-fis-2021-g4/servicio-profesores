@@ -9,7 +9,12 @@ var app = express();
 app.use(bodyParser.json());
 
 //inserción del director
-var profesorDirector = {"identificacion": "000000", "nombre": "Paul Mccartney", "editable": false, password: "ElCuartetoDeNos"};
+var profesorDirector = {
+    "identificacion": "000000",
+    "nombre": "Director",
+    "password": "123456",
+    "editable": false
+};
 Profesor.count({"identificacion": "000000"}, function (err, count) {
     console.log(count);
     if(count == 0)Profesor.create(profesorDirector);
@@ -99,6 +104,18 @@ app.post(BASE_API_PATH+"/profesores", (request, response) => {
                 if(error)
                 {
                     console.log(Date() + " - "+error);
+
+                    if(error.errors)
+                    {
+                        //console.log("error.errors");
+                        //console.log(error.errors);
+                        //console.log("error.message");
+                        //console.log(error.message);
+                        response.statusMessage = error.message;
+                        response.status(400).end();
+                        return response;
+                    }
+
                     response.sendStatus(500);
                 }
                 else
