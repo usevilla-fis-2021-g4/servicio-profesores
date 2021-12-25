@@ -8,16 +8,53 @@ var BASE_API_PATH = "/api/v1";
 var app = express();
 app.use(bodyParser.json());
 
-//inserción del director
-var profesorDirector = {
-    "identificacion": "000000",
-    "nombre": "Director",
-    "password": "123456",
-    "editable": false
-};
-Profesor.count({"identificacion": "000000"}, function (err, count) {
-    console.log(count);
-    if(count == 0)Profesor.create(profesorDirector);
+app.get(BASE_API_PATH+"/initialize", (request, response) => {
+
+    //inserción del director
+
+    var identificacion = "000000";
+    var profesorDirector = {
+        "identificacion": identificacion,
+        "nombre": "Director",
+        "password": "123456",
+        "editable": false
+    };
+    var filtro = {"identificacion": identificacion};
+
+    Profesor.count(filtro, function (err, count) {
+        console.log(count);
+        if(count == 0)
+        {
+            Profesor.create(profesorDirector, function(error) {
+                if(error)
+                {
+                    console.log(Date() + " - "+error);
+        
+                    if(error.errors)
+                    {
+                        response.statusMessage = error.message;
+                        response.status(400).end();
+                        return response;
+                    }
+        
+                    response.sendStatus(500);
+                }
+                else
+                {
+                    response.statusMessage = "Se ha creado el usuario director.";
+                    response.status(201).end();
+                    return response;
+                }
+            });
+        }
+        else
+        {
+            response.statusMessage = "El director ya existe.";
+            response.status(200).end();
+            return response;
+        }
+    });
+
 });
 
 app.get("/", (request, response) => {
@@ -82,11 +119,11 @@ app.get(BASE_API_PATH+"/profesores/:id", (request, response) => {
 app.post(BASE_API_PATH+"/profesores", (request, response) => {
     console.log(Date() + "POST - /profesores");
     var profesor = request.body;
-    console.log("profesor");
-    console.log(profesor);
+    // console.log("profesor");
+    // console.log(profesor);
 
     Profesor.count({"identificacion": profesor.identificacion}, function (err, count) {
-        console.log(count);
+        //console.log(count);
         if(count > 0)
         {
             //response.sendStatus(500);
@@ -132,11 +169,11 @@ app.patch(BASE_API_PATH+"/profesores/:id", (request, response) => {
     console.log(Date() + "PATCH - /profesores");
     var id = request.params.id;
     var datos = request.body;
-    console.log("id "+id);
-    console.log("datos "+datos);
+    // console.log("id "+id);
+    // console.log("datos "+datos);
 
     Profesor.count({"identificacion": datos.identificacion, _id: { $ne: id }}, function (err, count) {
-        console.log(count);
+        // console.log(count);
         if(count > 0)
         {
             //return response.status(409).send({message: "No se pudo guardar el cambio. Existe otro profesor con esa identificación."});

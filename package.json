@@ -10,7 +10,8 @@
   "homepage": "https://github.com/usevilla-fis-2021-g4/servicio-profesores",
   "scripts": {
     "start": "node index.js",
-    "test": "jest"
+    "test": "jest",
+    "integration": "jest -c jest.integration.config.js"
   },
   "author": "Juan Carlos Estrada Nieto y Brian Enríquez",
   "license": "ISC",
