@@ -30,26 +30,20 @@ describe("Api Profesores", () => {
 
         beforeAll(() => {
 
-            var profesor1 = {
-                "identificacion": "000000",
-                "nombre": "Cero",
-                "password": "000000",
-                "editable": false
-            };
-            profesor1["limpiar"] = function(){return profesor1;}; //hubo que agregarle el método porque daba problemas
-
-            var profesor2 = {
-                "identificacion": "111111",
-                "nombre": "Uno",
-                "password": "111111",
-                "editable": true
-            };
-            profesor2["limpiar"] = function(){return profesor2;}; //hubo que agregarle el método porque daba problemas
-
             var profesores = [
-                profesor1
+                new Profesor({
+                    "identificacion": "000000",
+                    "nombre": "Cero",
+                    "password": "000000",
+                    "editable": true
+                })
                 ,
-                profesor2
+                new Profesor({
+                    "identificacion": "111111",
+                    "nombre": "Uno",
+                    "password": "111111",
+                    "editable": true
+                })
             ];
 
             // console.log("profesores");

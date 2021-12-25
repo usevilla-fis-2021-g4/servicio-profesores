@@ -119,8 +119,8 @@ app.get(BASE_API_PATH+"/profesores/:id", (request, response) => {
 app.post(BASE_API_PATH+"/profesores", (request, response) => {
     console.log(Date() + "POST - /profesores");
     var profesor = request.body;
-    console.log("profesor");
-    console.log(profesor);
+    // console.log("profesor");
+    // console.log(profesor);
 
     Profesor.count({"identificacion": profesor.identificacion}, function (err, count) {
         //console.log(count);
@@ -169,11 +169,11 @@ app.patch(BASE_API_PATH+"/profesores/:id", (request, response) => {
     console.log(Date() + "PATCH - /profesores");
     var id = request.params.id;
     var datos = request.body;
-    console.log("id "+id);
-    console.log("datos "+datos);
+    // console.log("id "+id);
+    // console.log("datos "+datos);
 
     Profesor.count({"identificacion": datos.identificacion, _id: { $ne: id }}, function (err, count) {
-        console.log(count);
+        // console.log(count);
         if(count > 0)
         {
             //return response.status(409).send({message: "No se pudo guardar el cambio. Existe otro profesor con esa identificación."});
