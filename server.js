@@ -4,7 +4,7 @@ var bodyParser = require("body-parser");
 const Profesor = require('./profesores');
 const passport = require('passport');
 
-require('./passport.js');
+require('./passport');
 
 var BASE_API_PATH = "/api/v1";
 
@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 
 app.get(BASE_API_PATH+"/initialize", (request, response) => {
-    
+
     //inserción del director
     var identificacion = "000000";
     var profesorDirector = {
