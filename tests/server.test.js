@@ -1,6 +1,7 @@
 const app = require("../server.js");
 const request = require("supertest");
 const Profesor = require('../profesores.js');
+const ApiKey = require('../apikeys');
 
 describe("Hello world test", () => {
 
@@ -46,18 +47,26 @@ describe("Api Profesores", () => {
                 })
             ];
 
-            // console.log("profesores");
-            // console.log(profesores);
-
             dbFind = jest.spyOn(Profesor, "find");
             dbFind.mockImplementation((query, callback) => {
                 callback(null, profesores);
+            });
+
+            const user = {
+                user: "test",
+            };
+
+            auth = jest.spyOn(ApiKey, "findOne");
+            auth.mockImplementation((query, callback) => {
+                callback(null, new ApiKey(user));
             });
             
         });
 
         it("Should return all profesores", () => {
-            return request(app).get("/api/v1/profesores").then((response) => {
+            return request(app).get("/api/v1/profesores")
+            .set("apikey","1")//el valor de la api que se le pase no importa porque será sobreescrito por uno válido en el mock
+            .then((response) => {
 
                 // console.log("response.body");
                 // console.log(response.body);
@@ -99,7 +108,9 @@ describe("Api Profesores", () => {
                 callback(null);
             });
 
-            return request(app).post("/api/v1/profesores").send(nuevoProfesor).then((response) => {
+            return request(app).post("/api/v1/profesores")
+            .set("apikey","1")//el valor de la api que se le pase no importa porque será sobreescrito por uno válido en el mock
+            .send(nuevoProfesor).then((response) => {
                 expect(response.statusCode).toBe(201);
                 expect(dbInsert).toBeCalledWith(nuevoProfesor, expect.any(Function));
             });
@@ -116,7 +127,9 @@ describe("Api Profesores", () => {
                 callback(true);
             });
 
-            return request(app).post("/api/v1/profesores").send(nuevoProfesor).then((response) => {
+            return request(app).post("/api/v1/profesores")
+            .set("apikey","1")//el valor de la api que se le pase no importa porque será sobreescrito por uno válido en el mock
+            .send(nuevoProfesor).then((response) => {
                 expect(response.statusCode).toBe(500);
             });
 
@@ -132,7 +145,9 @@ describe("Api Profesores", () => {
                 callback(null);
             });
 
-            return request(app).post("/api/v1/profesores").send(nuevoProfesor).then((response) => {
+            return request(app).post("/api/v1/profesores")
+            .set("apikey","1")//el valor de la api que se le pase no importa porque será sobreescrito por uno válido en el mock
+            .send(nuevoProfesor).then((response) => {
                 expect(response.statusCode).toBe(409);
             });
 

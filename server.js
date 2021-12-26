@@ -2,16 +2,19 @@ var express = require("express");
 const url = require('url');
 var bodyParser = require("body-parser");
 const Profesor = require('./profesores');
+const passport = require('passport');
+
+require('./passport.js');
 
 var BASE_API_PATH = "/api/v1";
 
 var app = express();
 app.use(bodyParser.json());
+app.use(passport.initialize());
 
 app.get(BASE_API_PATH+"/initialize", (request, response) => {
-
+    
     //inserción del director
-
     var identificacion = "000000";
     var profesorDirector = {
         "identificacion": identificacion,
@@ -65,7 +68,9 @@ app.get(BASE_API_PATH+"/healthz", (request, response) => {
     response.sendStatus(200);
 });
 
-app.get(BASE_API_PATH+"/profesores", (request, response) => {
+app.get(BASE_API_PATH+"/profesores",
+    passport.authenticate("localapikey", {session: false}),
+    (request, response) => {
     console.log(Date() + "GET - /profesores");
 
     const queryObject = url.parse(request.url,true).query;
@@ -100,7 +105,9 @@ app.get(BASE_API_PATH+"/profesores", (request, response) => {
 });
 
 //obtener un profesor por id
-app.get(BASE_API_PATH+"/profesores/:id", (request, response) => {
+app.get(BASE_API_PATH+"/profesores/:id", 
+    passport.authenticate("localapikey", {session: false}),
+    (request, response) => {
     console.log(Date() + "GET - /profesores/"+request.params.id);
 
     Profesor.findById(request.params.id).then((profesor) => {
@@ -111,12 +118,13 @@ app.get(BASE_API_PATH+"/profesores/:id", (request, response) => {
     }).catch((error) => {
         response.status(500).send(error);
     });
-
 });
 
 //el body llega vacío con postman pero funciona haciendo el post desde terminal
 //curl -i -X POST "http://localhost:3000/api/v1/profesores" -H "Content-Type: application/json" -d "{\"identificacion\":\"444444\",\"nombre\":\"Perencejo\",\"editable\":true}"
-app.post(BASE_API_PATH+"/profesores", (request, response) => {
+app.post(BASE_API_PATH+"/profesores",
+    passport.authenticate("localapikey", {session: false}),
+    (request, response) => {
     console.log(Date() + "POST - /profesores");
     var profesor = request.body;
     // console.log("profesor");
@@ -165,7 +173,9 @@ app.post(BASE_API_PATH+"/profesores", (request, response) => {
 
 });
 
-app.patch(BASE_API_PATH+"/profesores/:id", (request, response) => {
+app.patch(BASE_API_PATH+"/profesores/:id", 
+    passport.authenticate("localapikey", {session: false}),
+    (request, response) => {
     console.log(Date() + "PATCH - /profesores");
     var id = request.params.id;
     var datos = request.body;
@@ -197,10 +207,11 @@ app.patch(BASE_API_PATH+"/profesores/:id", (request, response) => {
         }
     });
 
-
 });
 
-app.delete(BASE_API_PATH+"/profesores/:id", (request, response) => {
+app.delete(BASE_API_PATH+"/profesores/:id",
+    passport.authenticate("localapikey", {session: false}),
+    (request, response) => {
     console.log(Date() + "DELETE - /profesores");
     // var profesor_id = request.params.id;
     // console.log("profesor_id");
@@ -214,7 +225,6 @@ app.delete(BASE_API_PATH+"/profesores/:id", (request, response) => {
     }).catch((error) => {
         response.status(500).send(error);
     });
-
 });
 
 module.exports = app;
