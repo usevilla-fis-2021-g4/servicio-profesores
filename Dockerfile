@@ -13,6 +13,7 @@ COPY profesores.js .
 COPY server.js .
 COPY db.js .
 COPY passport.js .
+COPY apikeys.js .
 
 EXPOSE 3000
 
