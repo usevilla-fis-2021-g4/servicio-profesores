@@ -12,6 +12,7 @@ COPY index.js .
 COPY profesores.js .
 COPY server.js .
 COPY db.js .
+COPY passport.js .
 
 EXPOSE 3000
 
