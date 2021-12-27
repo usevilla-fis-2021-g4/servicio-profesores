@@ -18,7 +18,12 @@ const swaggerSpec = {
         },
         servers: [
             {
-                url: "http://localhost:3000"
+                url: "http://localhost:3000", 
+                description: "Servidor de desarrollo en localhost"
+            },
+            {
+                url: "https://api-juancarlosestradanieto.cloud.okteto.net/", 
+                description: "Servidor de despliegue de Okteto"
             }
         ]
     },
