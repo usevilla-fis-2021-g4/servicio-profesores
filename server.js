@@ -22,7 +22,7 @@ const swaggerSpec = {
                 description: "Servidor de desarrollo en localhost"
             },
             {
-                url: "https://api-juancarlosestradanieto.cloud.okteto.net/", 
+                url: "https://api-usevilla-fis-2021-g4-juancarlosestradanieto.cloud.okteto.net/", 
                 description: "Servidor de despliegue de Okteto"
             }
         ]
