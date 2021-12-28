@@ -3,6 +3,7 @@ const url = require('url');
 var bodyParser = require("body-parser");
 const Profesor = require('./profesores');
 const passport = require('passport');
+const axios = require('axios').default;
 
 //swagger documentation config
 const swaggerUI = require("swagger-ui-express");
@@ -69,6 +70,12 @@ app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
  *        nombre: John Doe
  *        password: 123456
  *        editable: true
+ *    Password:
+ *      type: object
+ *      properties:
+ *        password:
+ *          type: string
+ *          description: Una contraseña.
  * 
  * 
  *  securitySchemes:
@@ -479,5 +486,61 @@ app.delete(BASE_API_PATH+"/profesores/:id",
         response.status(500).send(error);
     });
 });
+
+/**
+ * @swagger
+ * /api/v1/password:
+ *    get:
+ *      summary: Retorna una contraseña.
+ *      tags: [Password]
+ *      responses:
+ *        401: 
+ *          $ref: '#/components/responses/UnauthorizedError'
+ *        500: 
+ *          description: Error al intentar generar la contraseña.
+ *        200: 
+ *          description: Contraseña generada con éxito.
+ *          content: 
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                $ref: '#/components/schemas/Password'
+ *      security:
+ *        - ApiKeyAuth: []
+ */
+app.get(BASE_API_PATH+"/password/",
+    passport.authenticate("localapikey", {session: false}),
+    (request, response) => {
+    
+    console.log(Date() + "GET - /password");
+
+    var options = {
+        method: 'GET',
+        url: 'https://password-generator1.p.rapidapi.com/api/generePassWd',
+        params: {len: '15'},
+        headers: {
+            'x-rapidapi-host': 'password-generator1.p.rapidapi.com',
+            'x-rapidapi-key': '7eb0ac9303msh23dc6cb035ece30p1720aajsn78bb70f893a4'
+        }
+    };
+    
+    axios.request(options)
+    .then(function (responseAxios) {
+        // handle success
+        console.log(responseAxios.data);
+        response.status(200).send({password: responseAxios.data.result.passwd});
+    })
+    .catch(function (error) {
+        // handle error
+        console.error(error);
+        response.status(500).send(error);
+    })
+    .then(function () {
+    // always executed
+    });
+
+});
+
+
 
 module.exports = app;
