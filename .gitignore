@@ -2,3 +2,4 @@ node_modules
 .devcontainer
 profesores.json
 coverage
+uploads

@@ -4,6 +4,7 @@ var bodyParser = require("body-parser");
 const Profesor = require('./profesores');
 const passport = require('passport');
 const axios = require('axios').default;
+const multer  = require('multer');
 
 //swagger documentation config
 const swaggerUI = require("swagger-ui-express");
@@ -36,8 +37,14 @@ require('./passport');
 var BASE_API_PATH = "/api/v1";
 
 var app = express();
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 app.use(passport.initialize());
+
+app.use(bodyParser.json({limit: "50mb"}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+
+
+const upload = multer({ dest: 'uploads/' });
 
 //swagger documentation config
 app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpec)));
@@ -541,6 +548,24 @@ app.get(BASE_API_PATH+"/password/",
 
 });
 
+app.post(BASE_API_PATH+"/profesores/:id/identificacion",
+    [passport.authenticate("localapikey", {session: false}), upload.single('identificacion')],
+    (request, response) => {
+    console.log(Date() + "POST - /profesores");
 
+    var profesor_id = request.params.id;
+    console.log("profesor_id");
+    console.log(profesor_id);
+    console.log("request.file");
+    console.log(request.file);
+
+    if (!request.file) {
+        return response.status(500).send({ msg: "file is not found" })
+    }
+
+    //const myFile = request.files;
+
+    response.status(200).send(profesor_id);
+});
 
 module.exports = app;
