@@ -14,7 +14,7 @@ jobs:
       matrix:
         node-version: [12.x, 14.x, 16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-    
+
     services:
       mongo:
         image: mongo
@@ -25,7 +25,7 @@ jobs:
           --health-retries 5
         ports:
           - 27017:27017
-    
+
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -38,4 +38,4 @@ jobs:
     - run: npm test
     - run: npm run integration
       env:
-        MONGO_URL: "mongodb://localhost/test"
+        MONGO_URL_SERVICIO_PROFESORES: "mongodb://localhost/test"
