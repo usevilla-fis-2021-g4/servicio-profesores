@@ -16,6 +16,7 @@
   "author": "Juan Carlos Estrada Nieto y Brian Enríquez",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1048.0",
     "axios": "^0.24.0",
     "express": "^4.17.1",
     "mongoose": "^6.0.14",

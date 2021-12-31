@@ -14,6 +14,7 @@ COPY server.js .
 COPY db.js .
 COPY passport.js .
 COPY apikeys.js .
+COPY s3.js .
 
 EXPOSE 3000
 
