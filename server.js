@@ -4,6 +4,11 @@ var bodyParser = require("body-parser");
 const Profesor = require('./profesores');
 const passport = require('passport');
 const axios = require('axios').default;
+const multer  = require('multer');
+const { uploadFile, getFileStream, getTemporaryUrl } = require("./s3");
+const fs = require("fs");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
 
 //swagger documentation config
 const swaggerUI = require("swagger-ui-express");
@@ -36,8 +41,14 @@ require('./passport');
 var BASE_API_PATH = "/api/v1";
 
 var app = express();
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 app.use(passport.initialize());
+
+app.use(bodyParser.json({limit: "50mb"}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+
+
+const upload = multer({ dest: 'uploads/' });
 
 //swagger documentation config
 app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpec)));
@@ -61,6 +72,9 @@ app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
  *        editable:
  *          type: boolean
  *          description: Si se puede o no editar profesor.
+ *        imagenIdentificacion:
+ *          type: string
+ *          description: La contraseña del profesor.
  *      required:
  *        - identificacion
  *        - nombre
@@ -76,7 +90,12 @@ app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
  *        password:
  *          type: string
  *          description: Una contraseña.
- * 
+ *    UrlArchivo:
+ *      type: object
+ *      properties:
+ *        url:
+ *          type: string
+ *          description: La url temporal firmada del archivo en S3.
  * 
  *  securitySchemes:
  *    ApiKeyAuth:       # arbitrary name for the security scheme
@@ -319,8 +338,8 @@ app.post(BASE_API_PATH+"/profesores",
     var profesor = request.body;
     // console.log("profesor");
     // console.log(profesor);
-
-    Profesor.count({"identificacion": profesor.identificacion}, function (err, count) {
+    var filtro = {"identificacion": profesor.identificacion};
+    Profesor.count(filtro, function (err, count) {
         //console.log(count);
         if(count > 0)
         {
@@ -351,11 +370,27 @@ app.post(BASE_API_PATH+"/profesores",
                         return response;
                     }
 
-                    response.sendStatus(500);
+                    return response.sendStatus(500);
                 }
                 else
                 {
-                    response.sendStatus(201);
+                    //console.log("nuevoProfesor");
+                    //console.log(nuevoProfesor);
+                    //return response.status(201).send(nuevoProfesor);
+
+                    Profesor.find(filtro, function(error, resultados) {
+                        if(error)
+                        {
+                            console.log(Date() + " - "+error);
+                            response.sendStatus(500);
+                        }
+                        else
+                        {
+                            response.status(201).send(resultados.map((profesor) => {
+                                return profesor.limpiar();
+                            }));
+                        }
+                    });
                 }
             });
         }
@@ -542,5 +577,157 @@ app.get(BASE_API_PATH+"/password/",
 });
 
 
+/**
+ * @swagger
+ * /api/v1/profesores/{id}/identificacion:
+ *    post:
+ *      summary: Permite cargar la imagen de la identificación un profesor al recibir un id válido.
+ *      tags: [Profesor]
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: Id del profesor.
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          multipart/form-data:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                identificacion:
+ *                  type: string
+ *                  format: binary
+ *      responses:
+ *        401: 
+ *          $ref: '#/components/responses/UnauthorizedError'
+ *        500: 
+ *          description: No se encontró el archivo en la solicitud.
+ *        404: 
+ *          description: Profesor no encontrado.
+ *        200: 
+ *          description: Profesor actualizado con éxito.
+ *          content: 
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                $ref: '#/components/schemas/Profesor'
+ *      security:
+ *        - ApiKeyAuth: []
+ */
+app.post(BASE_API_PATH+"/profesores/:id/identificacion",
+    [passport.authenticate("localapikey", {session: false}), upload.single('identificacion')],
+    async (request, response) => {
+    console.log(Date() + "POST - /profesores/:id/identificacion");
+
+    var profesor_id = request.params.id;
+    console.log("profesor_id");
+    console.log(profesor_id);
+    console.log("request.file");
+    console.log(request.file);
+
+    if (!request.file) {
+        return response.status(500).send({ msg: "file is not found" })
+    }
+
+    const myFile = request.file;
+
+    const result = await uploadFile(myFile);
+
+    console.log("result");
+    console.log(result);
+
+    await unlinkFile(myFile.path);
+
+    Profesor.findByIdAndUpdate(profesor_id, {imagenIdentificacion: result.key}, {new: true})
+    .then((profesor) => {
+        if (!profesor) 
+        {
+            return response.status(404).send();
+        }
+        response.send(profesor);
+    })
+    .catch((error) => {
+        response.status(500).send(error);
+    });
+
+    //response.status(200).send(profesor_id);
+});
+
+/**
+ * @swagger
+ * /api/v1/profesores/{id}/identificacion:
+ *    get:
+ *      summary: Retorna la url temporal firmada de la imagen de la identificación de un profesor al recibir un id válido.
+ *      tags: [Profesor]
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: Id del profesor.
+ *      responses:
+ *        401: 
+ *          $ref: '#/components/responses/UnauthorizedError'
+ *        500: 
+ *          description: Error al intentar consultar el profesor.
+ *        404: 
+ *          description: Profesor no encontrado.
+ *        200: 
+ *          description: Json con la url de la imagen.
+ *          content: 
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                $ref: '#/components/schemas/UrlArchivo'
+ *      security:
+ *        - ApiKeyAuth: []
+ */
+app.get(BASE_API_PATH+"/profesores/:id/identificacion",
+    [passport.authenticate("localapikey", {session: false}), upload.single('identificacion')],
+    async (request, response) => {
+    console.log(Date() + "GET - /profesores/:id/identificacion");
+
+    var profesor_id = request.params.id;
+    console.log("profesor_id");
+    console.log(profesor_id);
+
+    //const readStream = getFileStream("2387ff84e4496876121bebc1d287d90f.jpg");
+    //readStream.pipe(response);
+
+    Profesor.findById(profesor_id).then((profesor) => {
+
+        if (!profesor) {
+            return response.status(404).send();
+        }
+        // console.log("profesor");
+        // console.log(profesor);
+
+        const fileKey = profesor.imagenIdentificacion;
+        console.log("fileKey");
+        console.log(fileKey);
+
+        const promise = getTemporaryUrl(fileKey);
+
+        promise.then(
+            (url) => {
+                console.log('The URL is', url);
+                response.send({url: url});
+            }, 
+            (error) => { 
+                console.log("Error" + error);
+                response.status(500).send(error);
+            }
+        );
+
+        // response.send(profesor);
+    })
+    .catch((error) => {
+        response.status(500).send(error);
+    });
+});
 
 module.exports = app;
