@@ -27,6 +27,10 @@ spec:
                 secretKeyRef:
                   name: mongodb
                   key: mongo_url
+            - name: AWS_ACCESS_KEY_SERVICIO_PROFESORES
+              value: {{ .Values.AWS_ACCESS_KEY_SERVICIO_PROFESORES }}
+            - name: AWS_SECRET_ACCESS_KEY_SERVICIO_PROFESORES
+              value: {{ .Values.AWS_SECRET_ACCESS_KEY_SERVICIO_PROFESORES }}
           ports:
             - name: http
               containerPort: 3000
