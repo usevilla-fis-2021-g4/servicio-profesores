@@ -64,7 +64,7 @@ describe("Api Profesores", () => {
         });
 
         it("Should return all profesores", () => {
-            return request(app).get("/api/v1/profesores")
+            return request(app).get("/apiprofesores/v1/profesores")
             .set("apikey","1")//el valor de la api que se le pase no importa porque será sobreescrito por uno válido en el mock
             .then((response) => {
 
@@ -108,7 +108,7 @@ describe("Api Profesores", () => {
                 callback(null);
             });
 
-            return request(app).post("/api/v1/profesores")
+            return request(app).post("/apiprofesores/v1/profesores")
             .set("apikey","1")//el valor de la api que se le pase no importa porque será sobreescrito por uno válido en el mock
             .send(nuevoProfesor).then((response) => {
                 expect(response.statusCode).toBe(201);
@@ -127,7 +127,7 @@ describe("Api Profesores", () => {
                 callback(true);
             });
 
-            return request(app).post("/api/v1/profesores")
+            return request(app).post("/apiprofesores/v1/profesores")
             .set("apikey","1")//el valor de la api que se le pase no importa porque será sobreescrito por uno válido en el mock
             .send(nuevoProfesor).then((response) => {
                 expect(response.statusCode).toBe(500);
@@ -145,7 +145,7 @@ describe("Api Profesores", () => {
                 callback(null);
             });
 
-            return request(app).post("/api/v1/profesores")
+            return request(app).post("/apiprofesores/v1/profesores")
             .set("apikey","1")//el valor de la api que se le pase no importa porque será sobreescrito por uno válido en el mock
             .send(nuevoProfesor).then((response) => {
                 expect(response.statusCode).toBe(409);
