@@ -1,8 +1,8 @@
 tag: dev
 
-api:
+api2:
   replicaCount: 1
-  image: okteto.dev/api
+  image: okteto.dev/api2
 
 mongoUrl: mongodb://mongo/test
 

@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api
+  name: api2
   labels:
     {{- include "profesores.labels" . | nindent 4 }}
-    app.kubernetes.io/component: api
+    app.kubernetes.io/component: api2
 spec:
-  replicas: {{ .Values.api.replicaCount }}
+  replicas: {{ .Values.api2.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: api
+      app.kubernetes.io/name: api2
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: api
+        app.kubernetes.io/name: api2
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       terminationGracePeriodSeconds: 0
       containers:
-        - name: api
-          image: {{ .Values.api.image }}:{{ .Values.tag }}
+        - name: api2
+          image: {{ .Values.api2.image }}:{{ .Values.tag }}
           env:
             - name: MONGO_URL_SERVICIO_PROFESORES
               valueFrom:
