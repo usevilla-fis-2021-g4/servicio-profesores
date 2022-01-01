@@ -1,7 +1,10 @@
 tag: dev
 
-api: 
+api:
   replicaCount: 1
   image: okteto.dev/api
 
 mongoUrl: mongodb://mongo/test
+
+AWS_ACCESS_KEY_SERVICIO_PROFESORES: sedeberiasobreescribirconelhelmdeloktetopipeline
+AWS_SECRET_ACCESS_KEY_SERVICIO_PROFESORES: sedeberiasobreescribirconelhelmdeloktetopipeline
