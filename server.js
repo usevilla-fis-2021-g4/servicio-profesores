@@ -38,7 +38,7 @@ const swaggerSpec = {
 
 require('./passport');
 
-var BASE_API_PATH = "/api/v1";
+var BASE_API_PATH = "/apiprofesores/v1";
 
 var app = express();
 //app.use(bodyParser.json());
