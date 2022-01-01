@@ -1,8 +1,8 @@
 tag: dev
 
-api-profesores:
+apiprofesores:
   replicaCount: 1
-  image: okteto.dev/api-profesores
+  image: okteto.dev/apiprofesores
 
 mongoUrl: mongodb://mongo/test
 
