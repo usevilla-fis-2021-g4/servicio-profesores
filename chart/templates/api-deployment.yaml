@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api
+  name: apiprofesores
   labels:
     {{- include "profesores.labels" . | nindent 4 }}
-    app.kubernetes.io/component: api
+    app.kubernetes.io/component: apiprofesores
 spec:
-  replicas: {{ .Values.api.replicaCount }}
+  replicas: {{ .Values.apiprofesores.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: api
+      app.kubernetes.io/name: apiprofesores
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: api
+        app.kubernetes.io/name: apiprofesores
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       terminationGracePeriodSeconds: 0
       containers:
-        - name: api
-          image: {{ .Values.api.image }}:{{ .Values.tag }}
+        - name: apiprofesores
+          image: {{ .Values.apiprofesores.image }}:{{ .Values.tag }}
           env:
             - name: MONGO_URL_SERVICIO_PROFESORES
               valueFrom:
@@ -39,11 +39,11 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 1
             httpGet:
-              path: /api/v1/healthz
+              path: /apiprofesores/v1/healthz
               port: 3000
           livenessProbe:
             initialDelaySeconds: 10
             periodSeconds: 1
             httpGet:
-              path: /api/v1/healthz
+              path: /apiprofesores/v1/healthz
               port: 3000
