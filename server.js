@@ -21,7 +21,7 @@ const swaggerSpec = {
         info: {
             title: "Api de Profesores",
             version: "1.0.0"
-        },
+        }/*,
         servers: [
             {
                 url: "http://localhost:3000", 
@@ -31,7 +31,7 @@ const swaggerSpec = {
                 url: "https://api-usevilla-fis-2021-g4-juancarlosestradanieto.cloud.okteto.net/", 
                 description: "Servidor de despliegue de Okteto"
             }
-        ]
+        ]*/
     },
     apis: [`${path.join(__dirname, "./server.js")}`]
 };
@@ -111,7 +111,7 @@ app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
 
 /**
  * @swagger
- * /api/v1/initialize:
+ * /apiprofesores/v1/initialize:
  *    get:
  *      summary: Crea o actualiza a sus valores por defecto al usuario director.
  *      tags: [Profesor]
@@ -165,7 +165,7 @@ app.get(BASE_API_PATH+"/healthz", (request, response) => {
 
 /**
  * @swagger
- * /api/v1/profesores:
+ * /apiprofesores/v1/profesores:
  *    get:
  *      summary: Retorna todos los profesores.
  *      tags: [Profesor]
@@ -208,7 +208,7 @@ app.get(BASE_API_PATH+"/profesores",
 
 /**
  * @swagger
- * /api/v1/profesores/{id}:
+ * /apiprofesores/v1/profesores/{id}:
  *    get:
  *      summary: Retorna un profesor al recibir un id válido.
  *      tags: [Profesor]
@@ -255,7 +255,7 @@ app.get(BASE_API_PATH+"/profesores/:id",
 
 /**
  * @swagger
- * /api/v1/profesores.byIdentificacion/{identificacion}:
+ * /apiprofesores/v1/profesores.byIdentificacion/{identificacion}:
  *    get:
  *      summary: Retorna un profesor al recibir una identificación válida.
  *      tags: [Profesor]
@@ -303,7 +303,7 @@ app.get(BASE_API_PATH+"/profesores.byIdentificacion/:identificacion",
 
 /**
  * @swagger
- * /api/v1/profesores:
+ * /apiprofesores/v1/profesores:
  *    post:
  *      summary: Crea un nuevo profesor
  *      tags: [Profesor]
@@ -330,7 +330,7 @@ app.get(BASE_API_PATH+"/profesores.byIdentificacion/:identificacion",
  */
 
 //el body llega vacío con postman pero funciona haciendo el post desde terminal
-//curl -i -X POST "http://localhost:3000/api/v1/profesores" -H "Content-Type: application/json" -d "{\"identificacion\":\"444444\",\"nombre\":\"Perencejo\",\"editable\":true}"
+//curl -i -X POST "http://localhost:3000/apiprofesores/v1/profesores" -H "Content-Type: application/json" -d "{\"identificacion\":\"444444\",\"nombre\":\"Perencejo\",\"editable\":true}"
 app.post(BASE_API_PATH+"/profesores",
     passport.authenticate("localapikey", {session: false}),
     (request, response) => {
@@ -400,7 +400,7 @@ app.post(BASE_API_PATH+"/profesores",
 
 /**
  * @swagger
- * /api/v1/profesores/{id}:
+ * /apiprofesores/v1/profesores/{id}:
  *    patch:
  *      summary: Actualiza un profesor al recibir un id válido.
  *      tags: [Profesor]
@@ -475,7 +475,7 @@ app.patch(BASE_API_PATH+"/profesores/:id",
 
 /**
  * @swagger
- * /api/v1/profesores/{id}:
+ * /apiprofesores/v1/profesores/{id}:
  *    delete:
  *      summary: Elimina un profesor al recibir un id válido.
  *      tags: [Profesor]
@@ -524,7 +524,7 @@ app.delete(BASE_API_PATH+"/profesores/:id",
 
 /**
  * @swagger
- * /api/v1/password:
+ * /apiprofesores/v1/password:
  *    get:
  *      summary: Retorna una contraseña.
  *      tags: [Password]
@@ -579,7 +579,7 @@ app.get(BASE_API_PATH+"/password/",
 
 /**
  * @swagger
- * /api/v1/profesores/{id}/identificacion:
+ * /apiprofesores/v1/profesores/{id}/identificacion:
  *    post:
  *      summary: Permite cargar la imagen de la identificación un profesor al recibir un id válido.
  *      tags: [Profesor]
@@ -658,7 +658,7 @@ app.post(BASE_API_PATH+"/profesores/:id/identificacion",
 
 /**
  * @swagger
- * /api/v1/profesores/{id}/identificacion:
+ * /apiprofesores/v1/profesores/{id}/identificacion:
  *    get:
  *      summary: Retorna la url temporal firmada de la imagen de la identificación de un profesor al recibir un id válido.
  *      tags: [Profesor]
