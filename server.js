@@ -340,6 +340,25 @@ app.post(BASE_API_PATH+"/profesores",
     var profesor = request.body;
     // console.log("profesor");
     // console.log(profesor);
+    var identificacion = profesor.identificacion;
+
+    //inicio verificación identificacion es de estudiante
+    var host = request.protocol+"://"+request.get('host');
+    console.log(host);
+
+    EstudiantesResource.getOneEstudianteByIdentificacion(host, identificacion)
+    .then((body) => {
+        //response.send(body);
+        response.statusMessage = "La identificación ya está registrada en un estudiante.";
+        response.status(409).end();
+    })
+    .catch((error) => {
+        console.log("error: "+error);
+        response.sendStatus(500);
+    });
+    //fin verificación identificacion es de estudiante
+
+
     var filtro = {"identificacion": profesor.identificacion};
     Profesor.count(filtro, function (err, count) {
         //console.log(count);
