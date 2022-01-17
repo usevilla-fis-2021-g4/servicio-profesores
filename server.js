@@ -777,7 +777,7 @@ app.get(BASE_API_PATH+"/estudiantes-test", (request, response) => {
         //response.send(body);
     })
     .catch((error) => {
-        console.log("error: "+error);
+        console.log("entro aqui error: "+error);
         response.sendStatus(500);
     });
 });
