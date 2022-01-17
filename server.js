@@ -10,6 +10,8 @@ const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 
+var EstudiantesResource = require("./estudiantesResource");
+
 //swagger documentation config
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
@@ -727,6 +729,19 @@ app.get(BASE_API_PATH+"/profesores/:id/identificacion",
     })
     .catch((error) => {
         response.status(500).send(error);
+    });
+});
+
+app.get(BASE_API_PATH+"/estudiantes", (request, response) => {
+    console.log("GET /estudiantes");
+
+    EstudiantesResource.getAllEstudiantes()
+    .then((body) => {
+        response.send(body);
+    })
+    .catch((error) => {
+        console.log("error: "+error);
+        response.sendStatus(500);
     });
 });
 
