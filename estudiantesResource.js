@@ -5,7 +5,7 @@ class EstudiantesResource
 {
     static estudiantesUrl(recourceUrl)
     {
-        const estudiantesServer = (process.env.ESTUDIANTES_API_URL || "/apiestudiantes/v1");
+        const estudiantesServer = (process.env.ESTUDIANTES_API_URL || "http://localhost:3000/apiestudiantes/v1");
         return urlJoin(estudiantesServer, recourceUrl);
     }
 
