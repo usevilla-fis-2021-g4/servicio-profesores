@@ -761,6 +761,7 @@ app.get(BASE_API_PATH+"/profesores/:id/identificacion",
 
 /**
  * este método se creó para probar la respuesta en la comunicacioón con el servicio de estudiantes
+ * no está pensado para ser usado por sistemas externos y por ello no se le ha documentado
  * */
 app.get(BASE_API_PATH+"/estudiantes-test/:identificacion", (request, response) => {
     console.log("GET /estudiantes");
