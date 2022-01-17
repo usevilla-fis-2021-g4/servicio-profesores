@@ -759,7 +759,7 @@ app.get(BASE_API_PATH+"/estudiantes-test", (request, response) => {
     var host = request.protocol+"://"+request.get('host');
     console.log(host);
 
-    EstudiantesResource.getOneEstudianteByIdentificacion(host, "7456456")
+    EstudiantesResource.getOneEstudianteByIdentificacion(host, "74564567")
     .then((body) => {
         console.log("response.statusCode");
         console.log(response.statusCode);
