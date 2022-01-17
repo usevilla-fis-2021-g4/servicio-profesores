@@ -761,7 +761,10 @@ app.get(BASE_API_PATH+"/estudiantes-test", (request, response) => {
 
     EstudiantesResource.getOneEstudianteByIdentificacion(host, "7456456")
     .then((body) => {
-        response.send(body);
+        console.log("response.statusCode");
+        console.log(response.statusCode);
+        response.send({statusCode: response.statusCode});
+        //response.send(body);
     })
     .catch((error) => {
         console.log("error: "+error);
