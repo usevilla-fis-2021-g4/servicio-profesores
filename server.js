@@ -732,13 +732,13 @@ app.get(BASE_API_PATH+"/profesores/:id/identificacion",
     });
 });
 
-app.get(BASE_API_PATH+"/estudiantes", (request, response) => {
+app.get(BASE_API_PATH+"/estudiantes-test", (request, response) => {
     console.log("GET /estudiantes");
 
     var host = request.protocol+"://"+request.get('host');
     console.log(host);
 
-    EstudiantesResource.getAllEstudiantes(host)
+    EstudiantesResource.getOneEstudianteByIdentificacion(host, "7456456")
     .then((body) => {
         response.send(body);
     })

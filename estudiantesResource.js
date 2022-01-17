@@ -30,6 +30,16 @@ class EstudiantesResource
 
         return request.get(url, options);
     }
+
+    static getOneEstudianteByIdentificacion(host, identificacion)
+    {
+        const url = EstudiantesResource.estudiantesUrl(host, "/estudiantes.byIdentificacion/"+identificacion);
+        const options = {
+            headers: EstudiantesResource.requestHeaders()
+        };
+
+        return request.get(url, options);
+    }
 }
 
 module.exports = EstudiantesResource;
