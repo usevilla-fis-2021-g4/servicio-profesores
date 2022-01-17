@@ -10,6 +10,8 @@ const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 
+var EstudiantesResource = require("./estudiantesResource");
+
 //swagger documentation config
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
@@ -338,61 +340,88 @@ app.post(BASE_API_PATH+"/profesores",
     var profesor = request.body;
     // console.log("profesor");
     // console.log(profesor);
-    var filtro = {"identificacion": profesor.identificacion};
-    Profesor.count(filtro, function (err, count) {
-        //console.log(count);
-        if(count > 0)
+    var identificacion = profesor.identificacion;
+
+    //se verifica si la identificacion pertenece a un estudiante
+    var host = request.protocol+"://"+request.get('host');
+    console.log(host);
+    
+    EstudiantesResource.getOneEstudianteByIdentificacion(host, identificacion)
+    .then((body) => {
+        //response.send(body);
+        response.statusMessage = "La identificación ya está registrada en un estudiante.";
+        response.status(409).end();
+        response.send();
+    })
+    .catch((error) => {
+        console.log("EstudiantesResource.getOneEstudianteByIdentificacion error: "+error);
+
+        if(error.statusCode == 404)
         {
-            //response.sendStatus(500);
-            //return response.status(409).send("La identificación ya está registrada.");
-            //response.status(409);
-            //return response.send("La identificación ya está registrada.");
-            //return response.status(409).send('La identificación ya está registrada.');
-            response.statusMessage = "La identificación ya está registrada.";
-            response.status(409).end();
-            return response;
-        }
-        else
-        {
-            Profesor.create(profesor, function(error) {
-                if(error)
+            console.log("La identificación NO está registrada en un estudiante");
+       
+            var filtro = {"identificacion": profesor.identificacion};
+            Profesor.count(filtro, function (err, count) {
+                //console.log(count);
+                if(count > 0)
                 {
-                    console.log(Date() + " - "+error);
-
-                    if(error.errors)
-                    {
-                        //console.log("error.errors");
-                        //console.log(error.errors);
-                        //console.log("error.message");
-                        //console.log(error.message);
-                        response.statusMessage = error.message;
-                        response.status(400).end();
-                        return response;
-                    }
-
-                    return response.sendStatus(500);
+                    //response.sendStatus(500);
+                    //return response.status(409).send("La identificación ya está registrada.");
+                    //response.status(409);
+                    //return response.send("La identificación ya está registrada.");
+                    //return response.status(409).send('La identificación ya está registrada.');
+                    response.statusMessage = "La identificación ya está registrada.";
+                    response.status(409).end();
+                    return response;
                 }
                 else
                 {
-                    //console.log("nuevoProfesor");
-                    //console.log(nuevoProfesor);
-                    //return response.status(201).send(nuevoProfesor);
-
-                    Profesor.find(filtro, function(error, resultados) {
+                    Profesor.create(profesor, function(error) {
                         if(error)
                         {
                             console.log(Date() + " - "+error);
-                            response.sendStatus(500);
+        
+                            if(error.errors)
+                            {
+                                //console.log("error.errors");
+                                //console.log(error.errors);
+                                //console.log("error.message");
+                                //console.log(error.message);
+                                response.statusMessage = error.message;
+                                response.status(400).end();
+                                return response;
+                            }
+        
+                            return response.sendStatus(500);
                         }
                         else
                         {
-                            response.status(201).send(resultados.map((profesor) => {
-                                return profesor.limpiar();
-                            }));
+                            //console.log("nuevoProfesor");
+                            //console.log(nuevoProfesor);
+                            //return response.status(201).send(nuevoProfesor);
+        
+                            Profesor.find(filtro, function(error, resultados) {
+                                if(error)
+                                {
+                                    console.log(Date() + " - "+error);
+                                    response.sendStatus(500);
+                                }
+                                else
+                                {
+                                    response.status(201).send(resultados.map((profesor) => {
+                                        return profesor.limpiar();
+                                    }));
+                                }
+                            });
                         }
                     });
                 }
             });
+
+        }
+        else
+        {
+            response.sendStatus(500);
         }
     });
 
@@ -727,6 +756,42 @@ app.get(BASE_API_PATH+"/profesores/:id/identificacion",
     })
     .catch((error) => {
         response.status(500).send(error);
+    });
+});
+
+/**
+ * este método se creó para probar la respuesta en la comunicacioón con el servicio de estudiantes
+ * no está pensado para ser usado por sistemas externos y por ello no se le ha documentado
+ * */
+app.get(BASE_API_PATH+"/estudiantes-test/:identificacion", (request, response) => {
+    console.log("GET /estudiantes");
+
+    var identificacion = request.params.identificacion;
+
+    var host = request.protocol+"://"+request.get('host');
+    console.log(host);
+
+    EstudiantesResource.getOneEstudianteByIdentificacion(host, identificacion)
+    .then((body) => {
+        console.log("estudiante encontrado");
+        //console.log(body.statusCode);
+        //response.send({statusCode: body.statusCode});
+        response.send(body);
+    })
+    .catch((error) => {
+        console.log("error.statusCode");
+        console.log(error.statusCode);
+        console.log("error: '"+error+"'");
+        if(error.statusCode == 404)
+        {
+            console.log("estudiante no encontrado");
+            response.send({statusCode: error.statusCode});
+        }
+        else
+        {
+            response.sendStatus(500);
+        }
+        
     });
 });
 

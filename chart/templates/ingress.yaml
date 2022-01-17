@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: apiprofesores
+  labels:
+    {{- include "profesores.labels" . | nindent 4 }}
+  annotations:
+    dev.okteto.com/generate-host: "true"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: apiprofesores
+                port:
+                  number: 3000
+          - path: /apiestudiantes
+            pathType: Prefix
+            backend:
+              service:
+                name: apiestudiantes
+                port:
+                  number: 3000
