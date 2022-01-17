@@ -763,7 +763,7 @@ app.get(BASE_API_PATH+"/estudiantes-test", (request, response) => {
     .then((body) => {
         console.log("response.statusCode");
         console.log(response.statusCode);
-        response.send({statusCode: response.statusCode});
+        response.send({codigo: response.statusCode});
         //response.send(body);
     })
     .catch((error) => {
