@@ -735,7 +735,10 @@ app.get(BASE_API_PATH+"/profesores/:id/identificacion",
 app.get(BASE_API_PATH+"/estudiantes", (request, response) => {
     console.log("GET /estudiantes");
 
-    EstudiantesResource.getAllEstudiantes()
+    var host = request.protocol+"://"+request.get('host');
+    console.log(host);
+
+    EstudiantesResource.getAllEstudiantes(host)
     .then((body) => {
         response.send(body);
     })

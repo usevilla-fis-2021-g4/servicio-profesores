@@ -3,10 +3,14 @@ const request = require("request-promise-native").defaults({json: true});
 
 class EstudiantesResource
 {
-    static estudiantesUrl(recourceUrl)
+    static estudiantesUrl(host, recourceUrl)
     {
-        const estudiantesServer = (process.env.ESTUDIANTES_API_URL || "http://localhost:3000/apiestudiantes/v1");
-        return urlJoin(estudiantesServer, recourceUrl);
+        //const estudiantesServer = (process.env.ESTUDIANTES_API_URL || "http://localhost:3000/apiestudiantes/v1");
+        const estudiantesServer = host+"/apiestudiantes/v1";
+        var urlResultante = urlJoin(estudiantesServer, recourceUrl);
+        console.log("urlResultante");
+        console.log(urlResultante);
+        return urlResultante;
     }
 
     static requestHeaders()
@@ -17,9 +21,9 @@ class EstudiantesResource
         };
     }
 
-    static getAllEstudiantes()
+    static getAllEstudiantes(host)
     {
-        const url = EstudiantesResource.estudiantesUrl("/estudiantes");
+        const url = EstudiantesResource.estudiantesUrl(host, "/estudiantes");
         const options = {
             headers: EstudiantesResource.requestHeaders()
         };
