@@ -763,27 +763,25 @@ app.get(BASE_API_PATH+"/estudiantes-test/:identificacion", (request, response) =
 
     EstudiantesResource.getOneEstudianteByIdentificacion(host, identificacion)
     .then((body) => {
-        /*
-        if(body.statusCode == 404)//no encontrato
-        {
-
-        }
-        else
-        {
-
-        }
-        */
-        console.log("body.statusCode");
-        console.log(body.statusCode);
-        response.send({statusCode: body.statusCode});
-        //response.send(body);
+        console.log("estudiante encontrado");
+        //console.log(body.statusCode);
+        //response.send({statusCode: body.statusCode});
+        response.send(body);
     })
     .catch((error) => {
         console.log("error.statusCode");
         console.log(error.statusCode);
         console.log("error: '"+error+"'");
-        response.send({statusCode: error.statusCode});
-        //response.sendStatus(500);
+        if(error.statusCode == 404)
+        {
+            console.log("estudiante no encontrado");
+            response.send({statusCode: error.statusCode});
+        }
+        else
+        {
+            response.sendStatus(500);
+        }
+        
     });
 });
 
