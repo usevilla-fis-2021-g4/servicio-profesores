@@ -753,13 +753,15 @@ app.get(BASE_API_PATH+"/profesores/:id/identificacion",
     });
 });
 
-app.get(BASE_API_PATH+"/estudiantes-test", (request, response) => {
+app.get(BASE_API_PATH+"/estudiantes-test/:identificacion", (request, response) => {
     console.log("GET /estudiantes");
+
+    var identificacion = request.params.identificacion;
 
     var host = request.protocol+"://"+request.get('host');
     console.log(host);
 
-    EstudiantesResource.getOneEstudianteByIdentificacion(host, "74564567")
+    EstudiantesResource.getOneEstudianteByIdentificacion(host, identificacion)
     .then((body) => {
         /*
         if(body.statusCode == 404)//no encontrato
@@ -777,7 +779,10 @@ app.get(BASE_API_PATH+"/estudiantes-test", (request, response) => {
         //response.send(body);
     })
     .catch((error) => {
-        console.log("entro aqui error: "+error);
+        console.log("error.statusCode");
+        console.log(error.statusCode);
+        console.log("error: '"+error+"'");
+        response.send({statusCode: body.statusCode});
         response.sendStatus(500);
     });
 });
