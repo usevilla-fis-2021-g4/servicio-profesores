@@ -782,7 +782,7 @@ app.get(BASE_API_PATH+"/estudiantes-test/:identificacion", (request, response) =
         console.log("error.statusCode");
         console.log(error.statusCode);
         console.log("error: '"+error+"'");
-        response.send({statusCode: body.statusCode});
+        response.send({statusCode: error.statusCode});
         response.sendStatus(500);
     });
 });
