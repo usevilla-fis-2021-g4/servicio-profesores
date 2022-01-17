@@ -351,10 +351,12 @@ app.post(BASE_API_PATH+"/profesores",
         //response.send(body);
         response.statusMessage = "La identificación ya está registrada en un estudiante.";
         response.status(409).end();
+        return response;
     })
     .catch((error) => {
         console.log("error: "+error);
         response.sendStatus(500);
+        return response;
     });
     //fin verificación identificacion es de estudiante
 
