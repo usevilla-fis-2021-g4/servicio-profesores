@@ -356,7 +356,6 @@ app.post(BASE_API_PATH+"/profesores",
     .catch((error) => {
         console.log("EstudiantesResource.getOneEstudianteByIdentificacion error: "+error);
 
-
         if(error.statusCode == 404)
         {
             console.log("La identificación NO está registrada en un estudiante");
